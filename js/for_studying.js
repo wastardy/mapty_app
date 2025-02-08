@@ -121,14 +121,130 @@ const PersonProto = {
     },
 }
 
+// Creating an object using Object.create()
 const dave = Object.create(PersonProto);
 dave.name = 'Dave';
 dave.birthYear = 2000;
-dave.printInfo();
+// dave.printInfo();
 
+// Creating an object with better approach using init()
 const sarah = Object.create(PersonProto);
 sarah.init('Sarah', 2003);
-sarah.printInfo();
+// sarah.printInfo();
+
+// 5. ==================> Inheritance
+// Base class
+const User = function(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+}
+
+User.prototype.printInfo = function () {
+    console.log(
+        `User: ${this.firstName}, ` + 
+        `age: ${new Date().getFullYear() - this.birthYear}`
+    );
+}
+
+// Child class (inherits from User)
+const Student = function(firstName, birthYear, course) {
+    Person.call(this, firstName, birthYear);
+    this.course = course;
+}
+
+// ❗Link Student prototype to User prototype
+// BEFORE u create any other methods
+// Right now Student.prototype is empty
+// So then u can add any methods u want
+Student.prototype = Object.create(User.prototype);
+
+Student.prototype.printCourse = function () {
+    console.log(`${this.firstName} is studying ${this.course}`);
+}
+
+const mike = new Student('Mike', 2005, 'Computer Science');
+// mike.printCourse();
+// mike.printInfo();
+
+// console.log(mike.__proto__);
+// console.log(mike.__proto__.__proto__);
+
+Student.prototype.constructor = Student;
+// console.log(Student.prototype.constructor);
+
+// console.log(mike instanceof Student); // true
+// console.log(mike instanceof User); // true
+
+// 6. ==================> Inheritance ES6 Classes
+// Base class
+class Animal {
+    constructor(name, sound) {
+        this.name = name;
+        this.sound = sound;
+    }
+
+    get getName() {
+        return this.name;
+    }
+
+    printAnimalInfo() {
+        console.log(`Animal ${this.name} make sound ${this.sound}`);
+    }
+
+    /**
+     * @param {any} newName
+     */
+    set setName(newName) {
+        this.name = newName;
+    }
+}
+
+// Child class
+class Dog extends Animal {
+    constructor(name, sound, breed) {
+        // Always firstly call super()
+        super(name, sound);
+        this.breed = breed;
+    }
+
+    printAnimalInfo() {
+        console.log(
+            `I have ${this.breed} ` + 
+            `${this.name}, and he make sound ${this.sound}`);
+    }
+}
+
+const alpha = new Dog('Alpha', 'Raf raf', 'Pit bull');
+// alpha.printAnimalInfo();
+// console.log('Dog\'s name:', alpha.getName);
+
+// 7. ==================> Inheritance Object.create()
+const VehicleProto = {
+    init(name, year) {
+        this.name = name;
+        this.year = year;
+    },
+
+    printVehicleInfo() {
+        console.log(`Vehicle ${this.name} released at ${this.year}`);
+    }
+}   
+
+const CarProto = Object.create(VehicleProto);
+
+CarProto.init = function(name, year, model) {
+    VehicleProto.init.call(this, name, year);
+    this.model = model;
+}
+
+CarProto.printCarInfo = function() {
+    console.log(`Car ${this.name} ${this.model} released at ${this.year}`);
+}
+
+const audi = Object.create(CarProto);
+audi.init('Audi', 2024, 'rs7');
+// audi.printVehicleInfo();
+// audi.printCarInfo();
 
 ////////////////////////////////////////////////////////
 
@@ -168,27 +284,27 @@ sarah.printInfo();
     }
 } */
 
-const Car = function (name, speed) {
-    this.name = name;
-    this.speed = speed;
-}
+// const Car = function (name, speed) {
+//     this.name = name;
+//     this.speed = speed;
+// }
 
-Car.prototype.accelerate = function () {
-    console.log(`Init ${this.name}'s speed = ${this.speed}km/h`);
+// Car.prototype.accelerate = function () {
+//     console.log(`Init ${this.name}'s speed = ${this.speed}km/h`);
     
-    this.speed += 10;
-    console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
-}
+//     this.speed += 10;
+//     console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
+// }
 
-Car.prototype.break = function () {
-    console.log(`Current ${this.name}'s speed = ${this.speed}km/h`);
+// Car.prototype.break = function () {
+//     console.log(`Current ${this.name}'s speed = ${this.speed}km/h`);
 
-    this.speed -= 5;
-    console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
-}
+//     this.speed -= 5;
+//     console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
+// }
 
-const supra = new Car('Toyota Supra', 170);
-const gtr = new Car('Nissan GT-R', 175);
+// const supra = new Car('Toyota Supra', 170);
+// const gtr = new Car('Nissan GT-R', 175);
 
 // supra.accelerate();
 // gtr.break();
@@ -242,10 +358,10 @@ class CarES6 {
 }
 
 const ford = new CarES6('Ford Mustang \'67', 120);
-ford.printInfo();
-console.log(ford.speedUS); // check speed in mi/h format
-ford.speedUS = 110; // set speed as 110 miles
-ford.printInfo(); // so speed was 120km/h and came to 176km/h
+// ford.printInfo();
+// console.log(ford.speedUS); // check speed in mi/h format
+// ford.speedUS = 110; // set speed as 110 miles
+// ford.printInfo(); // so speed was 120km/h and came to 176km/h
 
 ////////////////////////////////////////////////////////
 
@@ -253,7 +369,7 @@ ford.printInfo(); // so speed was 120km/h and came to 176km/h
 
 /* 
 1.  Use a constructor function to implement an Electric Car 
-    (called EV) as a CHILD "class" of Car. Besides a make and 
+    (called EV) as a CHILD "class" of Car. Besides a name and 
     current speed, the EV also has the current battery charge 
     in % ('charge' property);
 2.  Implement a 'chargeBattery' method which takes an argument 
@@ -264,12 +380,72 @@ ford.printInfo(); // so speed was 120km/h and came to 176km/h
 4.  Create an electric car object and experiment with calling 
     'accelerate', 'brake' and 'chargeBattery' (charge to 90%). 
     Notice what happens when you 'accelerate'! HINT: Review the 
-    definiton of polymorphism 😉
-
-DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
+    definiton of polymorphism 
 
 */
 
+// Parrent class
+const Car = function (name, speed) {
+    this.name = name;
+    this.speed = speed;
+}
+
+Car.prototype.accelerate = function () {
+    console.log(`\ninit\t|\t${this.name} going at speed ${this.speed}km/h`);
+    
+    this.speed += 10;
+    console.log(`current\t|\t${this.name} going at speed ${this.speed}km/h\n`);
+}
+
+Car.prototype.break = function () {
+    console.log(`\ninit\t|\t${this.name} going at speed ${this.speed}km/h`);
+
+    this.speed -= 5;
+    console.log(`current\t|\t${this.name} going at speed ${this.speed}km/h\n`);
+}
+
+// Child class
+const ElectricCar = function (name, speed, charge) {
+    Car.call(this, name, speed);
+    this.charge = charge;
+}
+
+ElectricCar.prototype = Object.create(Car.prototype);
+
+ElectricCar.prototype.chargeBattery = function (chargeTo) {
+    this.charge = chargeTo;
+}
+
+ElectricCar.prototype.accelerate = function () {
+    // console.log(
+    //     `\ninit\t|\t${this.name} ` + 
+    //     `going at speed ${this.speed}km/h ` + 
+    //     `with a charge of ${this.charge}%`
+    // );
+
+    this.speed += 20;
+    this.charge--;
+
+    // console.log(
+    //     `current\t|\t${this.name} ` + 
+    //     `going at speed ${this.speed}km/h ` + 
+    //     `with a charge of ${this.charge}%\n`
+    // );
+
+    console.log(
+        `accelerating\t|\t${this.name} ` + 
+        `going at speed ${this.speed}km/h ` + 
+        `with a charge of ${this.charge}%\n`
+    );
+}
+
+const tesla = new ElectricCar('Tesla Model X', 120, 23);
+// tesla.accelerate();
+// tesla.break();
+// tesla.accelerate();
+// tesla.accelerate();
+// tesla.accelerate();
+// tesla.accelerate();
 ////////////////////////////////////////////////////////
 
 // Challenge #4
