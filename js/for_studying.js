@@ -80,6 +80,9 @@ class PersonCl {
     }
 
     // ✅ Setter
+    /**
+     * @param {string} newName
+     */
     set setName(newName) {
         this.firstName = newName;
     }
@@ -96,11 +99,36 @@ PersonCl.prototype.sayHi = function () {
 }
 
 const person1 = new PersonCl('Brayan', 2004);
-person1.printAge();
-person1.sayHi();
+// person1.printAge();
+// person1.sayHi();
 person1.getAge;
 person1.setName = 'Stephen';
-person1.sayHi();
+// person1.sayHi();
+
+// 4. ==================> Object.create
+const PersonProto = {
+    init(name, birthYear) {
+        this.name = name;
+        this.birthYear = birthYear;
+    },
+
+    printInfo() {
+        console.log(`name: ${this.name}, age: ${this.printAge()}`);
+    },
+
+    printAge() {
+        return new Date().getFullYear() - this.birthYear;
+    },
+}
+
+const dave = Object.create(PersonProto);
+dave.name = 'Dave';
+dave.birthYear = 2000;
+dave.printInfo();
+
+const sarah = Object.create(PersonProto);
+sarah.init('Sarah', 2003);
+sarah.printInfo();
 
 ////////////////////////////////////////////////////////
 
@@ -178,10 +206,46 @@ const gtr = new Car('Nissan GT-R', 175);
     by multiplying the input by 1.6);
 4.  Create a new car and experiment with the accelerate and 
     brake methods, and with the getter and setter.
-
-DATA CAR 1: 'Ford' going at 120 km/h
-
 */
+
+class CarES6 {
+    constructor(name, speed) {
+        this.name = name;
+        this.speed = speed;
+    }
+
+    accelerate() {
+        console.log(`Init ${this.name}'s speed = ${this.speed}km/h`);
+        
+        this.speed += 10;
+        console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
+    }
+
+    break() {
+        console.log(`Current ${this.name}'s speed = ${this.speed}km/h`);
+    
+        this.speed -= 5;
+        console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
+    }
+
+    get speedUS() {
+        return this.speed / 1.6
+    }
+
+    set speedUS(speed) {
+        this.speed = (speed * 1.6);
+    }
+
+    printInfo() {
+        console.log(`${this.name} is driving at speed ${this.speed} km/h`);
+    }
+}
+
+const ford = new CarES6('Ford Mustang \'67', 120);
+ford.printInfo();
+console.log(ford.speedUS); // check speed in mi/h format
+ford.speedUS = 110; // set speed as 110 miles
+ford.printInfo(); // so speed was 120km/h and came to 176km/h
 
 ////////////////////////////////////////////////////////
 
