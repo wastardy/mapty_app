@@ -246,6 +246,84 @@ audi.init('Audi', 2024, 'rs7');
 // audi.printVehicleInfo();
 // audi.printCarInfo();
 
+// 8. ==================> Incapsulation
+// Encapsulation: Private Class Fields and Methods
+
+// 1) Public fields
+// 2) Private fields
+// 3) Public methods
+// 4) Private methods
+// STATIC version of these 4
+
+class Account {
+    locale = navigator.language;
+    bank = 'Web bank';
+    #movements = []; // private field
+    #pin; // private field
+  
+    constructor(owner, currency, pin) {
+        this.owner = owner;
+        this.currency = currency;
+        this.#pin = pin;
+    
+        // this.movements = [];
+        // this.locale = navigator.language;
+    
+        // console.log(`Thanks for opening an account, ${owner}`);
+    }
+  
+    // ❗To be chaninable, return this keyword in methods
+
+    // Public interface (API)
+    getMovements() {
+        return this.#movements;
+        // Not chaninable
+    }
+  
+    deposit(val) {
+        this.#movements.push(val);
+        return this;
+    }
+  
+    withdraw(val) {
+        this.deposit(-val);
+        return this;
+    }
+  
+    // private method
+    #approveLoan(val) {
+        // Fake method
+        return true;
+    }
+  
+    requestLoan(val) {
+        if (this.#approveLoan(val)) {
+            this.deposit(val);
+            // console.log(`Loan approved`);
+        }
+        return this;
+    }
+}
+
+const acc1 = new Account('Andrew', 'EUR', 1111);
+
+// acc1.deposit(300);
+// acc1.withdraw(100);
+// use chaining
+const movements = acc1
+  .deposit(300)
+  .withdraw(100)
+  .withdraw(50)
+  .requestLoan(25000)
+  .withdraw(4000)
+  .getMovements();
+
+// console.log(acc1);
+
+// console.log(acc1.#movements);
+// console.log(movements);
+
+
 ////////////////////////////////////////////////////////
 
 //#region Coding Challenges
@@ -324,40 +402,40 @@ audi.init('Audi', 2024, 'rs7');
     brake methods, and with the getter and setter.
 */
 
-class CarES6 {
-    constructor(name, speed) {
-        this.name = name;
-        this.speed = speed;
-    }
+// class CarES6 {
+//     constructor(name, speed) {
+//         this.name = name;
+//         this.speed = speed;
+//     }
 
-    accelerate() {
-        console.log(`Init ${this.name}'s speed = ${this.speed}km/h`);
+//     accelerate() {
+//         console.log(`Init ${this.name}'s speed = ${this.speed}km/h`);
         
-        this.speed += 10;
-        console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
-    }
+//         this.speed += 10;
+//         console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
+//     }
 
-    break() {
-        console.log(`Current ${this.name}'s speed = ${this.speed}km/h`);
+//     break() {
+//         console.log(`Current ${this.name}'s speed = ${this.speed}km/h`);
     
-        this.speed -= 5;
-        console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
-    }
+//         this.speed -= 5;
+//         console.log(`New ${this.name}'s speed = ${this.speed}km/h`);
+//     }
 
-    get speedUS() {
-        return this.speed / 1.6
-    }
+//     get speedUS() {
+//         return this.speed / 1.6
+//     }
 
-    set speedUS(speed) {
-        this.speed = (speed * 1.6);
-    }
+//     set speedUS(speed) {
+//         this.speed = (speed * 1.6);
+//     }
 
-    printInfo() {
-        console.log(`${this.name} is driving at speed ${this.speed} km/h`);
-    }
-}
+//     printInfo() {
+//         console.log(`${this.name} is driving at speed ${this.speed} km/h`);
+//     }
+// }
 
-const ford = new CarES6('Ford Mustang \'67', 120);
+// const ford = new CarES6('Ford Mustang \'67', 120);
 // ford.printInfo();
 // console.log(ford.speedUS); // check speed in mi/h format
 // ford.speedUS = 110; // set speed as 110 miles
@@ -452,7 +530,7 @@ const tesla = new ElectricCar('Tesla Model X', 120, 23);
 
 /* 
 1.  Re-create challenge #3, but this time using ES6 classes: 
-    create an 'EVCl' child class of the 'CarCl' class
+    create an 'ElectricCarES6' child class of the 'CarES6' class
 2.  Make the 'charge' property private;
 3.  Implement the ability to chain the 'accelerate' and 
     'chargeBattery' methods of this class, and also update 
@@ -462,4 +540,96 @@ const tesla = new ElectricCar('Tesla Model X', 120, 23);
 DATA CAR 1: 'Rivian' going at 120 km/h, with a charge of 23%
 
 */
+
+class CarES6 {
+    constructor(name, speed) {
+        this.name = name;
+        this.speed = speed;
+    }
+
+    accelerate() {
+        // console.log(`\ninit\t|\t${this.name} going at speed ${this.speed}km/h`);
+    
+        this.speed += 10;
+        console.log(`accelerate\t|\t${this.name} going at speed ${this.speed}km/h\n`);
+
+        return this;
+    }
+
+    break() {
+        // console.log(`\ninit\t|\t${this.name} going at speed ${this.speed}km/h`);
+
+        this.speed -= 5;
+        console.log(`break\t|\t${this.name} going at speed ${this.speed}km/h\n`);
+
+        return this;
+    }
+
+    get speedUS() {
+        return this.speed / 1.6
+    }
+
+    set speedUS(speed) {
+        this.speed = (speed * 1.6);
+    }
+
+    printInfo() {
+        console.log(`${this.name} is driving at speed ${this.speed} km/h`);
+    }
+}
+
+class ElectricCarES6 extends CarES6 {
+    #charge;
+    
+    constructor(name, speed, charge) {
+        super(name, speed);
+        this.#charge = charge;
+    }
+
+    accelerate() {
+        this.speed += 20;
+        this.#charge--;
+    
+        console.log(
+            `accelerate\t|\t${this.name} ` + 
+            `going at speed ${this.speed}km/h ` + 
+            `with a charge of ${this.#charge}%\n`
+        );
+
+        return this;
+    }
+
+    chargeBattery(chargeTo) {
+        this.#charge = chargeTo;
+        console.log(`charging battery\t|\t${this.name} now with a charge of ${this.#charge}%\n`);
+
+        return this;
+    }
+}
+
+// Base class instance
+const ford = new CarES6('Ford Mustang \'67', 120);
+// const fordInfo = ford
+//     .accelerate()
+//     .accelerate()
+//     .break()
+//     .accelerate()
+//     .accelerate()
+//     .break();
+
+// console.log('-- Car info:\n', fordInfo, '\n\n');
+
+// Child class instance
+const rivian = new ElectricCarES6('Rivian', 120, 23);
+// const rivianInfo = rivian
+//     .accelerate()
+//     .accelerate()
+//     .accelerate()
+//     .accelerate()
+//     .break()
+//     .chargeBattery(80)
+//     .accelerate()
+//     .accelerate();
+
+// console.log('-- Electric car info:\n', rivianInfo);
 //#endregion
