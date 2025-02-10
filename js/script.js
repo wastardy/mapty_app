@@ -26,6 +26,19 @@ const inputElevation = document.querySelector('.form__input--elevation');
 //#endregion
 
 //#region Methods
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude } = position.coords; 
+            const { longitude } = position.coords;
+            console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+        }, 
+        () => {
+            alert('Cood not get your position');
+        }
+    );
+}
+
 //#endregion
 
 //#region Event Handlers
