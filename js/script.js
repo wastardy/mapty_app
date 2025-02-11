@@ -26,18 +26,34 @@ const inputElevation = document.querySelector('.form__input--elevation');
 //#endregion
 
 //#region Methods
-if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-            const { latitude } = position.coords; 
-            const { longitude } = position.coords;
-            console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
-        }, 
-        () => {
-            alert('Cood not get your position');
-        }
-    );
-}
+document.addEventListener('DOMContentLoaded', () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude } = position.coords; 
+                const { longitude } = position.coords;
+                console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+                
+                const coords = [latitude, longitude];
+                
+                // use leaflet map
+                const map = L.map('map').setView(coords, 15);
+    
+                // .org => .fr/hot
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                }).addTo(map);
+    
+                L.marker(coords).addTo(map)
+                    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                    .openPopup();
+            }, 
+            () => {
+                alert('Cood not get your position');
+            }
+        );
+    }
+});
 
 //#endregion
 
