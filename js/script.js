@@ -16,6 +16,9 @@ const months = [
     'December'
 ];
 
+let map;
+let mapEvent;
+
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
 const inputType = document.querySelector('.form__input--type');
@@ -26,6 +29,22 @@ const inputElevation = document.querySelector('.form__input--elevation');
 //#endregion
 
 //#region Methods
+const printMarker = (mapEvent) => {
+    // console.log(mapEvent);
+    const { lat, lng } = mapEvent.latlng;
+
+    L.marker([lat, lng]).addTo(map)
+    .bindPopup(L.popup({
+        maxWidth: 250, 
+        minWidth: 100,
+        autoClose: false,
+        closeOnClick: false,
+        className: 'running-popup',
+    }))
+    .setPopupContent('Workout')
+    .openPopup();
+}
+
 const loadMapNMarker = () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -37,27 +56,21 @@ const loadMapNMarker = () => {
                 const coords = [latitude, longitude];
                 
                 // use leaflet map
-                const map = L.map('map').setView(coords, 15);
+                map = L.map('map').setView(coords, 15);
     
                 // .org => .fr/hot
                 L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
     
-                map.on('click', (mapEvent) => {
-                    console.log(mapEvent);
-                    const { lat, lng } = mapEvent.latlng;
+                // handle click on map
+                map.on('click', function(mapE) {
+                    mapEvent = mapE;
 
-                    L.marker([lat, lng]).addTo(map)
-                    .bindPopup(L.popup({
-                        maxWidth: 250, 
-                        minWidth: 100,
-                        autoClose: false,
-                        closeOnClick: false,
-                        className: 'running-popup',
-                    }))
-                    .setPopupContent('Workout')
-                    .openPopup();
+                    form.classList.remove('hidden');
+                    inputDistance.focus();
+
+                    // printMarker(mapEvent);
                 });
             }, 
             () => {
