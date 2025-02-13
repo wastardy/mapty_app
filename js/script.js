@@ -26,7 +26,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 //#endregion
 
 //#region Methods
-document.addEventListener('DOMContentLoaded', () => {
+const loadMapNMarker = () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
@@ -40,24 +40,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 const map = L.map('map').setView(coords, 15);
     
                 // .org => .fr/hot
-                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
                     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 }).addTo(map);
     
-                L.marker(coords).addTo(map)
-                    .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+                map.on('click', (mapEvent) => {
+                    console.log(mapEvent);
+                    const { lat, lng } = mapEvent.latlng;
+
+                    L.marker([lat, lng]).addTo(map)
+                    .bindPopup(L.popup({
+                        maxWidth: 250, 
+                        minWidth: 100,
+                        autoClose: false,
+                        closeOnClick: false,
+                        className: 'running-popup',
+                    }))
+                    .setPopupContent('Workout')
                     .openPopup();
+                });
             }, 
             () => {
                 alert('Cood not get your position');
             }
         );
     }
-});
+}
 
 //#endregion
 
 //#region Event Handlers
+document.addEventListener('DOMContentLoaded', loadMapNMarker);
 //#endregion
 
 //#region Testing
