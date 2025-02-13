@@ -80,10 +80,32 @@ const loadMapNMarker = () => {
     }
 }
 
+function formSubmit(event) {
+    event.preventDefault();
+
+    // Clear input fields
+    inputDistance.value = '';
+    inputDuration.value = '';
+    inputCadence.value = '';
+    inputElevation.value = '';
+
+    // Display Marker
+    printMarker(mapEvent);
+}
+
+const toggleInputType = () => {
+    inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+    inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
+}
+
 //#endregion
 
 //#region Event Handlers
 document.addEventListener('DOMContentLoaded', loadMapNMarker);
+
+form.addEventListener('submit', formSubmit);
+
+inputType.addEventListener('change', toggleInputType)
 //#endregion
 
 //#region Testing
