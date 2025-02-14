@@ -25,7 +25,24 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 //#endregion
 
-//#region Classes
+//#region Base Class
+class Workout {
+    date = new Date();
+    
+    // convert date to string and select last 10 numbers
+    id = (new Date() + '').slice(-10);
+
+    constructor(coords, distance, duration) {
+        // this.date = ...
+        // this.id = ...
+        this.coords = coords;
+        this.distance = distance; // in km
+        this.duration = duration; // in min
+    }
+}
+//#endregion
+
+//#region App Class
 class App {
     #map;
     #mapEvent;
@@ -119,5 +136,4 @@ class App {
 }
 
 const app = new App();
-
 //#endregion
