@@ -164,16 +164,59 @@ class App {
     }
 
     _newWorkout(event) {
+        const checkIsNumberInputs = (...inputs) => 
+            inputs.every(input => Number.isFinite(input));
+
+        const checkIsPositiveInputs = (...inputs) =>
+            inputs.every(input => input > 0);
+            
         event.preventDefault();
+
+        // Get data from the form
+        const type = inputType.value;
+        const distance = +inputDistance.value;
+        const duration = +inputDuration.value;
+        // const cadence = type === 'running' ? +inputCadence.value : null;
+        // const elevation = type === 'cycling' ? +inputElevation.value : null;
+
+        // If running => Running
+        if (type === 'running') {
+            const cadence = +inputCadence.value;
+
+            // Check if data is valid
+            if (!checkIsNumberInputs(distance, duration, cadence) ||
+                !checkIsPositiveInputs(distance, duration, cadence)) 
+            {
+                return alert('All inputs have to be positive numbers!');
+            }
+        }
+        
+        // If cycling => Cycling
+        if (type === 'cycling') {
+            const elevation = +inputElevation.value;
+
+            // Check if data is valid
+            if (!checkIsNumberInputs(distance, duration, elevation) ||
+                !checkIsPositiveInputs(distance, duration)) 
+            {
+                return alert('All inputs have to be positive numbers!');
+            }   
+        }
+
+        // Add new obj to workout arr
+
+        // Render workout on map as marker
+        this._printMarker();
+
+        // Render workout on list
+
+        // Hide form, clear input
 
         // Clear input fields
         inputDistance.value = '';
         inputDuration.value = '';
         inputCadence.value = '';
         inputElevation.value = '';
-
-        // Display Marker
-        this._printMarker();
     }
 }
 
