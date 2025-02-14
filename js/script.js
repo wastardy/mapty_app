@@ -1,6 +1,6 @@
 'use strict';
 
-//#region Declarings
+//#region Declarations
 const months = [
     'January', 
     'February', 
@@ -23,42 +23,9 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
-
-let map;
-let mapEvent;
-//#endregion
-
-//#region Methods
-const loadMapNMarker = () => {
-    
-}
-
-function formSubmit(event) {
-    event.preventDefault();
-
-    // Clear input fields
-    inputDistance.value = '';
-    inputDuration.value = '';
-    inputCadence.value = '';
-    inputElevation.value = '';
-
-    // Display Marker
-    printMarker(mapEvent);
-}
-
-const toggleInputType = () => {
-    inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
-    inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
-}
-
-//#endregion
-
-//#region Event Handlers
-document.addEventListener('DOMContentLoaded', loadMapNMarker);
 //#endregion
 
 //#region Classes
-
 class App {
     #map;
     #mapEvent;
@@ -66,9 +33,15 @@ class App {
     constructor() {
         this._getPosition();
 
-        form.addEventListener('submit', this._newWorkout.bind(this));
+        form.addEventListener(
+            'submit', 
+            this._newWorkout.bind(this)
+        );
         
-        inputType.addEventListener('change', toggleInputType)
+        inputType.addEventListener(
+            'change', 
+            this._toggleElevationField.bind(this)
+        );
     }
 
     _getPosition() {
@@ -96,20 +69,22 @@ class App {
         }).addTo(this.#map);
         
         // handle click on map
-        this.#map.on('click', (mapE) => {
-            this.#mapEvent = mapE;
-        
-            form.classList.remove('hidden');
-            inputDistance.focus();
-        });
+        this.#map.on('click', this._showForm.bind(this));
     }
 
-    _showForm() {
-
+    _showForm(mapE) {
+        this.#mapEvent = mapE;
+        
+        form.classList.remove('hidden');
+        inputDistance.focus();
     }
 
     _toggleElevationField() {
-
+        inputElevation.closest('.form__row')
+            .classList.toggle('form__row--hidden');
+        
+        inputCadence.closest('.form__row').classList
+            .toggle('form__row--hidden');
     }
 
     _printMarker() {
