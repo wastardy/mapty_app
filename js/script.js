@@ -29,6 +29,9 @@ let mapEvent;
 //#endregion
 
 class App {
+    #map;
+    #mapEvent;
+
     constructor() {
         this._getPosition();
     }
