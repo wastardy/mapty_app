@@ -30,7 +30,7 @@ class Workout {
     date = new Date();
     
     // convert date to string and select last 10 numbers
-    id = (new Date() + '').slice(-10);
+    id = (Date.now() + '').slice(-10);
 
     constructor(coords, distance, duration) {
         // this.date = ...
@@ -79,9 +79,9 @@ class Cycling extends Workout {
     }
 }
 
-const run1 = new Running([39, -12], 5.2, 24, 178);
-const cycling1 = new Cycling([39, -12], 27, 95, 523);
-console.log(run1, cycling1);
+// const run1 = new Running([39, -12], 5.2, 24, 178);
+// const cycling1 = new Cycling([39, -12], 27, 95, 523);
+// console.log(run1, cycling1);
 //#endregion
 
 //#region App Class
