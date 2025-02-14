@@ -88,6 +88,7 @@ class Cycling extends Workout {
 class App {
     #map;
     #mapEvent;
+    #workoutsList = [];
 
     constructor() {
         this._getPosition();
@@ -174,8 +175,10 @@ class App {
 
         // Get data from the form
         const type = inputType.value;
+        const { lat, lng } = this.#mapEvent.latlng;
         const distance = +inputDistance.value;
         const duration = +inputDuration.value;
+        let workout;
         // const cadence = type === 'running' ? +inputCadence.value : null;
         // const elevation = type === 'cycling' ? +inputElevation.value : null;
 
@@ -189,6 +192,8 @@ class App {
             {
                 return alert('All inputs have to be positive numbers!');
             }
+
+            workout = new Running([lat, lng], distance, duration, cadence);
         }
         
         // If cycling => Cycling
@@ -201,6 +206,8 @@ class App {
             {
                 return alert('All inputs have to be positive numbers!');
             }   
+
+            workout = new Cycling([lat, lng], distance, duration, elevation);
         }
 
         // Add new obj to workout arr
@@ -217,6 +224,9 @@ class App {
         inputDuration.value = '';
         inputCadence.value = '';
         inputElevation.value = '';
+
+        this.#workoutsList.push(workout)
+        console.log(this.#workoutsList);
     }
 }
 
