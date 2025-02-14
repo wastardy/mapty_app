@@ -1,6 +1,6 @@
 'use strict';
 
-//#region Query Selectors
+//#region Declarings
 const months = [
     'January', 
     'February', 
@@ -16,9 +16,6 @@ const months = [
     'December'
 ];
 
-let map;
-let mapEvent;
-
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
 const inputType = document.querySelector('.form__input--type');
@@ -26,7 +23,65 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
+
+let map;
+let mapEvent;
 //#endregion
+
+class App {
+    constructor() {
+        this._getPosition();
+    }
+
+    _getPosition() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                this._loadMap, // position parameter will be passed automatically
+                () => alert('Cood not get your position'),
+            );
+        }
+    }
+
+    _loadMap(position) {
+        const { latitude } = position.coords; 
+        const { longitude } = position.coords;
+        console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
+                    
+        const coords = [latitude, longitude];
+                    
+        // use leaflet map
+        map = L.map('map').setView(coords, 16);
+        
+        // .org => .fr/hot
+        L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        // handle click on map
+        map.on('click', function(mapE) {
+            mapEvent = mapE;
+    
+            form.classList.remove('hidden');
+            inputDistance.focus();
+    
+            // printMarker(mapEvent);
+        });
+    }
+
+    _showForm() {
+
+    }
+
+    _toggleElevationField() {
+
+    }
+
+    _newWorkout() {
+
+    }
+}
+
+const app = new App();
 
 //#region Methods
 const printMarker = (mapEvent) => {
@@ -46,38 +101,7 @@ const printMarker = (mapEvent) => {
 }
 
 const loadMapNMarker = () => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude } = position.coords; 
-                const { longitude } = position.coords;
-                console.log(`https://www.google.com/maps/@${latitude},${longitude}`);
-                
-                const coords = [latitude, longitude];
-                
-                // use leaflet map
-                map = L.map('map').setView(coords, 15);
     
-                // .org => .fr/hot
-                L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                }).addTo(map);
-    
-                // handle click on map
-                map.on('click', function(mapE) {
-                    mapEvent = mapE;
-
-                    form.classList.remove('hidden');
-                    inputDistance.focus();
-
-                    // printMarker(mapEvent);
-                });
-            }, 
-            () => {
-                alert('Cood not get your position');
-            }
-        );
-    }
 }
 
 function formSubmit(event) {
