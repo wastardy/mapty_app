@@ -232,6 +232,24 @@ class App {
         form.insertAdjacentHTML('afterend', html);
     }
 
+    _hideInputForm() {
+        // Clear inputs
+        inputDistance.value = '';
+        inputDuration.value = '';
+        inputCadence.value = '';
+        inputElevation.value = '';
+
+        /*  
+            If uncomment bottom lines, 
+            form will dissapper immediately
+            actually i don't like it that way
+        */
+
+        // form.style.display = 'none';
+        form.classList.add('hidden');
+        // setTimeout(() => form.style.display = 'grid', 1000);
+    }
+
     _newWorkout(event) {
         const checkIsNumberInputs = (...inputs) => 
             inputs.every(input => Number.isFinite(input));
@@ -290,10 +308,7 @@ class App {
         this._renderWorkout(workout);
 
         // Hide form, clear input fields
-        inputDistance.value = '';
-        inputDuration.value = '';
-        inputCadence.value = '';
-        inputElevation.value = '';
+        this._hideInputForm();
     }
 }
 
