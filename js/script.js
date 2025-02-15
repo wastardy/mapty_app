@@ -1,21 +1,6 @@
 'use strict';
 
 //#region Declarations
-const months = [
-    'January', 
-    'February', 
-    'March', 
-    'April', 
-    'May', 
-    'June', 
-    'July', 
-    'August', 
-    'September', 
-    'October', 
-    'November', 
-    'December'
-];
-
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
 const inputType = document.querySelector('.form__input--type');
@@ -39,6 +24,29 @@ class Workout {
         this.distance = distance; // in km
         this.duration = duration; // in min
     }
+
+    _setDescription() {
+        const months = [
+            'January', 
+            'February', 
+            'March', 
+            'April', 
+            'May', 
+            'June', 
+            'July', 
+            'August', 
+            'September', 
+            'October', 
+            'November', 
+            'December'
+        ];
+
+        this.description = 
+            `${this.type[0].toUppercase()}` + 
+            `${this.type.slice(1)} ` +
+            `on ${months[this.date.getMonth()]} `
+            `on ${this.date.getDay()}`;
+    }
 }
 //#endregion
 
@@ -52,6 +60,7 @@ class Running extends Workout {
         this.cadence = cadence;
 
         this.calculatePace();
+        this._setDescription();
     }
 
     calculatePace() {
@@ -72,6 +81,7 @@ class Cycling extends Workout {
         this.elevationGain = elevationGain;
 
         this.calculateSpeed();
+        this._setDescription();
     }
 
     calculateSpeed() {
@@ -224,10 +234,9 @@ class App {
         this._printMarker(workout);
 
         // Render workout on list
+        this._renderWorkout(workout);
 
-        // Hide form, clear input
-
-        // Clear input fields
+        // Hide form, clear input fields
         inputDistance.value = '';
         inputDuration.value = '';
         inputCadence.value = '';
