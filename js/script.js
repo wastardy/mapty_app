@@ -42,10 +42,10 @@ class Workout {
         ];
 
         this.description = 
-            `${this.type[0].toUppercase()}` + 
+            `${this.type[0].toUpperCase()}` + 
             `${this.type.slice(1)} ` +
-            `on ${months[this.date.getMonth()]} `
-            `on ${this.date.getDay()}`;
+            `on ${months[this.date.getMonth()]} ` +
+            `${this.date.getDate()}`;
     }
 }
 //#endregion
