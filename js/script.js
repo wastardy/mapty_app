@@ -13,6 +13,7 @@ const inputElevation = document.querySelector('.form__input--elevation');
 //#region Base Class
 class Workout {
     date = new Date();
+    clicks = 0;
     
     // convert date to string and select last 10 numbers
     id = (Date.now() + '').slice(-10);
@@ -46,6 +47,10 @@ class Workout {
             `${this.type.slice(1)} ` +
             `on ${months[this.date.getMonth()]} ` +
             `${this.date.getDate()}`;
+    }
+
+    clicksCount() {
+        this.clicks++;
     }
 }
 //#endregion
@@ -258,6 +263,38 @@ class App {
         // setTimeout(() => form.style.display = 'grid', 1000);
     }
 
+    _moveToPopup(event) {
+        const workoutElement = event.target.closest('.workout');
+        // console.log(workoutElement);
+
+        if (!workoutElement) return;
+
+        const workout = this.#workoutsList.find(workout => 
+            workout.id === workoutElement.dataset.id
+        );
+
+        this.#map.setView(
+            workout.coords, 
+            this.#mapZoomLevel,
+            {
+                animate: true,
+                pan: {
+                    duration: 1, 
+                }
+            }
+        );
+
+        // Using the public interface   
+        workout.clicksCount();
+    }
+
+    _setLocalStorage() {
+        localStorage.setItem(
+            'workouts_list', 
+            JSON.stringify(this.#workoutsList)
+        );
+    }
+
     _newWorkout(event) {
         const checkIsNumberInputs = (...inputs) => 
             inputs.every(input => Number.isFinite(input));
@@ -317,28 +354,9 @@ class App {
 
         // Hide form, clear input fields
         this._hideInputForm();
-    }
 
-    _moveToPopup(event) {
-        const workoutElement = event.target.closest('.workout');
-        // console.log(workoutElement);
-
-        if (!workoutElement) return;
-
-        const workout = this.#workoutsList.find(workout => 
-            workout.id === workoutElement.dataset.id
-        );
-
-        this.#map.setView(
-            workout.coords, 
-            this.#mapZoomLevel,
-            {
-                animate: true,
-                pan: {
-                    duration: 1, 
-                }
-            }
-        );
+        // Set local storage to all workouts
+        this._setLocalStorage();
     }
 }
 
