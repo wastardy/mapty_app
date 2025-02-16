@@ -377,7 +377,13 @@ class App {
         // Set local storage to all workouts
         this._setLocalStorage();
     }
+
+    reset() {
+        localStorage.removeItem('workouts_list');
+        location.reload();
+    }
 }
 
 const app = new App();
+// app.reset();
 //#endregion
