@@ -101,6 +101,7 @@ class Cycling extends Workout {
 //#region App Class
 class App {
     #map;
+    #mapZoomLevel = 16;
     #mapEvent;
     #workoutsList = [];
 
@@ -115,6 +116,11 @@ class App {
         inputType.addEventListener(
             'change', 
             this._toggleElevationField.bind(this)
+        );
+
+        containerWorkouts.addEventListener(
+            'click',
+            this._moveToPopup.bind(this)
         );
     }
 
@@ -135,7 +141,7 @@ class App {
         const coords = [latitude, longitude];
                     
         // use leaflet map
-        this.#map = L.map('map').setView(coords, 16);
+        this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
         
         // .org => .fr/hot
         L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
@@ -311,6 +317,28 @@ class App {
 
         // Hide form, clear input fields
         this._hideInputForm();
+    }
+
+    _moveToPopup(event) {
+        const workoutElement = event.target.closest('.workout');
+        // console.log(workoutElement);
+
+        if (!workoutElement) return;
+
+        const workout = this.#workoutsList.find(workout => 
+            workout.id === workoutElement.dataset.id
+        );
+
+        this.#map.setView(
+            workout.coords, 
+            this.#mapZoomLevel,
+            {
+                animate: true,
+                pan: {
+                    duration: 1, 
+                }
+            }
+        );
     }
 }
 
