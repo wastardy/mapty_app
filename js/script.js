@@ -132,6 +132,11 @@ class App {
             'click',
             this._moveToPopup.bind(this)
         );
+
+        containerWorkouts.addEventListener(
+            'click',
+            this._deleteWorkout.bind(this)
+        );
     }
 
     _getPosition() {
@@ -166,32 +171,43 @@ class App {
     _renderWorkout(workout) {
         let html = `
             <li class="workout workout--${workout.type}" data-id="${workout.id}">
-                <h2 class="workout__title">${workout.description}</h2>
-                <div class="workout__details">
-                    <span class="workout__icon">
-                        ${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}
-                    </span>
-                    <span class="workout__value">${workout.distance}</span>
-                    <span class="workout__unit">km</span>
+                <div class="workout__header">
+                    <h2 class="workout__title">
+                        ${workout.description}
+                    </h2>
+                    <button class="workout__delete-btn">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
                 </div>
                 <div class="workout__details">
-                    <span class="workout__icon">⏱</span>
-                    <span class="workout__value">${workout.duration}</span>
-                    <span class="workout__unit">min</span>
+                    <div class="workout__container">
+                        <span class="workout__icon">
+                            ${workout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'}
+                        </span>
+                        <span class="workout__value">${workout.distance}</span>
+                        <span class="workout__unit">km</span>
+                    </div>
+                    <div class="workout__container">
+                        <span class="workout__icon">⏱</span>
+                        <span class="workout__value">${workout.duration}</span>
+                        <span class="workout__unit">min</span>
+                    </div>
                 </div>
         `;
 
         if (workout.type === 'running') {
             html += `
                     <div class="workout__details">
-                        <span class="workout__icon">⚡️</span>
-                        <span class="workout__value">${workout.pace}</span>
-                        <span class="workout__unit">min/km</span>
-                    </div>
-                    <div class="workout__details">
-                        <span class="workout__icon">🦶🏼</span>
-                        <span class="workout__value">${workout.cadence}</span>
-                        <span class="workout__unit">spm</span>
+                        <div class="workout__container">
+                            <span class="workout__icon">⚡️</span>
+                            <span class="workout__value">${workout.pace}</span>
+                            <span class="workout__unit">min/km</span>
+                        </div>
+                        <div class="workout__container">
+                            <span class="workout__icon">🦶🏼</span>
+                            <span class="workout__value">${workout.cadence}</span>
+                            <span class="workout__unit">spm</span>
+                        </div>
                     </div>
                 </li>
             `;
@@ -200,19 +216,22 @@ class App {
         if (workout.type === 'cycling') {
             html += `
                 <div class="workout__details">
-                    <span class="workout__icon">⚡️</span>
-                    <span class="workout__value">${workout.speed}</span>
-                    <span class="workout__unit">km/h</span>
-                </div>
-                <div class="workout__details">
-                    <span class="workout__icon">⛰</span>
-                    <span class="workout__value">${workout.elevationGain}</span>
-                    <span class="workout__unit">m</span>
+                    <div class="workout__container">
+                        <span class="workout__icon">⚡️</span>
+                        <span class="workout__value">${workout.speed}</span>
+                        <span class="workout__unit">km/h</span>
+                    </div>
+                    <div class="workout__container">
+                        <span class="workout__icon">⛰</span>
+                        <span class="workout__value">${workout.elevationGain}</span>
+                        <span class="workout__unit">m</span>
+                    </div>
                 </div>
             </li>
             `;
         }
 
+        // console.log(html);
         form.insertAdjacentHTML('afterend', html);
     }
 
@@ -376,6 +395,24 @@ class App {
 
         // Set local storage to all workouts
         this._setLocalStorage();
+    }
+
+    _deleteWorkout(event) {
+        if (!event.target.closest('.workout__delete-btn')) return;
+
+        const workoutElement = event.target.closest('.workout');
+        const workoutId = workoutElement.dataset.id;
+
+        // delete element from DOM
+        workoutElement.remove();
+
+        // delete workout form arr
+        this.#workoutsList = this.#workoutsList.filter(
+            workout => workout.id !== workoutId
+        );
+
+        this._setLocalStorage();
+        location.reload();
     }
 
     reset() {

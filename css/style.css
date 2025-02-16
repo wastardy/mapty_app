@@ -73,9 +73,12 @@ a:visited {
     margin-bottom: 1.75rem;
     cursor: pointer;
 
-    display: grid;
+    /* display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    gap: 0.75rem 1.5rem;
+    gap: 0.75rem 1.5rem; */
+
+    display: flex;
+    flex-direction: column;
 }
 .workout--running {
     border-left: 5px solid var(--color-brand--2);
@@ -84,20 +87,61 @@ a:visited {
     border-left: 5px solid var(--color-brand--1);
 }
 
+.workout__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
 .workout__title {
     font-size: 1.7rem;
     font-weight: 600;
     grid-column: 1 / -1;
 }
 
+.workout__delete-btn {
+    border: none;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    
+    background-color: #aaa;
+    /* margin-left: 10px;
+    padding: 5px; */
+    border-radius: 10px;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.workout__delete-btn:hover {
+    color: #1f2327;
+    transform: scale(1.1);
+}
+
+.workout__delete-btn i {
+    pointer-events: none;
+    color: #2d3439;
+    z-index: 10;
+}
+
 .workout__details {
     display: flex;
+    justify-content: space-between;
+    /* margin-top: 0.5rem; */
+    width: 100%;
+}
+
+.workout__container {
+    display: flex;
     align-items: baseline;
+    justify-content: flex-start;
+    width: 48%; 
 }
 
 .workout__icon {
     font-size: 1.8rem;
-    margin-right: 0.2rem;
+    margin-right: 0.5rem;
     height: 0.28rem;
 }
 
